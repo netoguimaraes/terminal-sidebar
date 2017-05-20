@@ -29,7 +29,7 @@ For customizations on layout, [see blessed-contrib grids](https://github.com/yar
 Other configs can be overwrited in ```config.js```;
 * `twitter`: an array with twitter usernames (dafault are bots). This will fill the twitter boxes.
 * `weather`: a city name to show up weather;
-* `celsius`: if true, degree are showed as celsius. if not it's Fahrenheits.
+* `celsius`: if true, degrees are showed as celsius. if not it's Fahrenheits.
 
 ## :tomato: Pomodoro Mode
 
