@@ -1,16 +1,12 @@
 #!/usr/bin/env node
 var config = require(__dirname + '/config.js');
 var twitterbot = require(__dirname + '/twitterbot.js');
-var gitbot = require(__dirname + '/gitbot.js');
 var pomodoro = require(__dirname + '/pomodoro.js');
 
 var notifier = require('node-notifier');
-var spawn = require('child_process').spawn;
 var blessed = require('blessed');
 var contrib = require('blessed-contrib');
-var chalk = require('chalk');
 var parrotSay = require('parrotsay-api');
-var bunnySay = require('sign-bunny');
 var weather = require('weather-js');
 
 var inPomodoroMode = false;
@@ -81,16 +77,19 @@ screen.key(['p', 'C-p'], function(ch, key) {
 
 var grid = new contrib.grid({rows: 12, cols: 12, screen: screen});
 
-// grid.set(row, col, rowSpan, colSpan, obj, opts)
-var weatherBox = grid.set(0, 8, 2, 4, blessed.box, makeScrollBox(' 🌤 '));
-var todayBox = grid.set(0, 0, 6, 6, blessed.box, makeScrollBox(' 📝  Today '));
-var weekBox = grid.set(6, 0, 6, 6, blessed.box, makeScrollBox(' 📝  Week '));
-var commits = grid.set(0, 6, 6, 2, contrib.bar, makeGraphBox('Commits'));
-var parrotBox = grid.set(6, 6, 6, 6, blessed.box, makeScrollBox(''));
-
 var tweetBoxes = {}
-tweetBoxes[config.twitter[1]] = grid.set(2, 8, 2, 4, blessed.box, makeBox(' 💖 '));
-tweetBoxes[config.twitter[2]] = grid.set(4, 8, 2, 4, blessed.box, makeBox(' 💬 '));
+// grid.set(row, col, rowSpan, colSpan, obj, opts)
+var weatherBox = grid.set(0, 0, 2, 12, blessed.box, makeScrollBox(' 🌤 '));
+tweetBoxes[config.twitter[1]] = grid.set(2, 0, 3, 6, blessed.box, makeBox(' 💖 '));
+tweetBoxes[config.twitter[2]] = grid.set(2, 6, 3, 6, blessed.box, makeBox(' 💬 '));
+tweetBoxes[config.twitter[3]] = grid.set(5, 0, 3, 6, blessed.box, makeBox(' 💬 b2b'));
+tweetBoxes[config.twitter[4]] = grid.set(5, 6, 3, 6, blessed.box, makeBox(' 💬 future'));
+var parrotBox = grid.set(8, 0, 4, 12, blessed.box, makeScrollBox(''));
+
+parrotSay('I was an atheist, ').then(function(text) {
+  parrotBox.content = text;
+  screen.render();
+});
 
 tick();
 setInterval(tick, 1000 * 60 * config.updateInterval);
@@ -98,7 +97,6 @@ setInterval(tick, 1000 * 60 * config.updateInterval);
 function tick() {
   doTheWeather();
   doTheTweets();
-  doTheCodes();
 }
 
 function doTheWeather() {
@@ -131,29 +129,6 @@ function doTheTweets() {
       if (inPomodoroMode) {
         return;
       }
-      twitterbot.getTweet(config.twitter[which]).then(function(tweet) {
-        if (config.say === 'bunny') {
-          parrotBox.content = bunnySay(tweet.text);
-          screen.render();
-        } else if (config.say === 'llama') {
-          parrotBox.content = llamaSay(tweet.text);
-          screen.render();
-        } else if (config.say === 'cat') {
-          parrotBox.content = catSay(tweet.text);
-          screen.render();
-        } else {
-          parrotSay(tweet.text).then(function(text) {
-            parrotBox.content = text;
-            screen.render();
-          });
-        }
-      },function(error) {
-        // Just in case we don't have tweets.
-        parrotSay('Hi! You\'re doing great!!!').then(function(text) {
-          parrotBox.content = text;
-          screen.render();
-        });
-      });
     } else {
       twitterbot.getTweet(config.twitter[which]).then(function(tweet) {
         tweetBoxes[tweet.bot.toLowerCase()].content = tweet.text;
@@ -164,63 +139,6 @@ function doTheTweets() {
         'Can\'t read Twitter without some API keys  🐰. Maybe try the scraping version instead?';
       });
     }
-  }
-}
-
-function doTheCodes() {
-  var todayCommits = 0;
-  var weekCommits = 0;
-
-  function getCommits(data, box) {
-    var content = colorizeLog(data || '');
-    box.content += content;
-    var commitRegex = /(.......) (- .*)/g;
-    return (box && box.content) ? (box.content.match(commitRegex) || []).length : '0';
-  }
-
-  if (config.gitbot.toLowerCase() === 'gitstandup') {
-    var today = spawn('sh ' + __dirname + '/standup-helper.sh', ['-m ' + config.depth, config.repos], {shell:true});
-    todayBox.content = '';
-    today.stdout.on('data', data => {
-      todayCommits = getCommits(`${data}`, todayBox);
-      updateCommitsGraph(todayCommits, weekCommits);
-      screen.render();
-    });
-
-    var week = spawn('sh ' + __dirname + '/standup-helper.sh', ['-m ' + config.depth + ' -d 7', config.repos], {shell:true});
-    weekBox.content = '';
-    week.stdout.on('data', data => {
-      weekCommits = getCommits(`${data}`, weekBox);
-      updateCommitsGraph(todayCommits, weekCommits);
-      screen.render();
-    });
-  } else {
-    gitbot.findGitRepos(config.repos, config.depth-1, (err, allRepos) => {
-      if (err) {
-        return todayBox.content = err;
-        screen.render();
-      }
-      gitbot.getCommitsFromRepos(allRepos, 1, (err, data) => {
-        if (err) {
-          return todayBox.content = err;
-          screen.render();
-        }
-        todayBox.content = '';
-        todayCommits = getCommits(`${data}`, todayBox);
-        updateCommitsGraph(todayCommits, weekCommits);
-        screen.render();
-      });
-      gitbot.getCommitsFromRepos(allRepos, 7, (err, data) => {
-        if (err) {
-          return weekBox.content = err;
-          screen.render();
-        }
-        weekBox.content = '';
-        weekCommits = getCommits(`${data}`, weekBox);
-        updateCommitsGraph(todayCommits, weekCommits);
-        screen.render();
-      });
-    });
   }
 }
 
@@ -258,44 +176,6 @@ function makeGraphBox(label) {
   options.xOffset= 4;
   options.maxHeight= 10;
   return options;
-}
-
-function updateCommitsGraph(today, week) {
-  commits.setData({titles: ['today', 'week'], data: [today, week]})
-}
-
-function colorizeLog(text) {
-  var lines = text.split('\n');
-  var regex = /(.......) (- .*) (\(.*\)) (<.*>)/i;
-  var nothingRegex = /Seems like .* did nothing/i;
-  for (var i = 0; i < lines.length; i++) {
-    // If it's a path
-    if (lines[i][0] === '/') {
-      lines[i] = formatRepoName(lines[i], '/')
-    } else if(lines[i][0] === '\\') {
-      lines[i] = formatRepoName(lines[i], '\\')
-    } else {
-      // It may be a mean "seems like .. did nothing!" message. Skip it
-      var nothing = lines[i].match(nothingRegex);
-      if (nothing) {
-        lines[i] = '';
-        continue;
-      }
-
-      // It's a commit.
-      var matches = lines[i].match(regex);
-      if (matches) {
-        lines[i] = chalk.red(matches[1]) + ' ' + matches[2] + ' ' +
-            chalk.green(matches[3])
-      }
-    }
-  }
-  return lines.join('\n');
-}
-
-function formatRepoName(line, divider) {
-  var path = line.split(divider);
-  return '\n' + chalk.yellow(path[path.length - 1]);
 }
 
 function llamaSay(text) {
