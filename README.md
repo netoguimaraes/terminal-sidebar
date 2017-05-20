@@ -19,8 +19,9 @@ $ git clone https://github.com/netoguimaraes/terminal-sidebar.git
 at project root dir:
 ```
 $ node sidebar.js
-You can exit the dashboard by pressing esc or q. You can refresh it manually by pressing r.
 ```
+You can exit the dashboard by pressing esc or q. You can refresh it manually by pressing r.
+
 ## 3. Customization
 
 For customizations on layout, [see blessed-contrib grids](https://github.com/yaronn/blessed-contrib#grid);
