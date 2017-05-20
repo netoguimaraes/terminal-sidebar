@@ -1,10 +1,10 @@
 # terminal-sidebar
 
-> based on tiny-care-terminal, by notwaldorf
+> based on [tiny-care-terminal, by notwaldorf](https://github.com/notwaldorf/tiny-care-terminal/)
 
 A simple terminal sidebar. Ideal for using with any multiplexer client, like tmux, tilix and others. It contains some twitter bots, an animal companion, some weather stuff and updates at every minute.
 
-<img width="1000" alt="tiny terminal care screenshot" src="https://cloud.githubusercontent.com/assets/1369170/25066240/adc3b1ac-21d5-11e7-9811-508b6bcfcc89.png">
+<img width="1000" alt="tiny terminal care screenshot" src="https://raw.githubusercontent.com/netoguimaraes/terminal-sidebar/no-git-stuff/terminal-sidebar.png">
 
 ## Make it go
 
@@ -23,9 +23,9 @@ You can exit the dashboard by pressing esc or q. You can refresh it manually by 
 ```
 ## 3. Customization
 
-For customizations on layout, see blessed-contrib grids;
+For customizations on layout, [see blessed-contrib grids](https://github.com/yaronn/blessed-contrib#grid);
 
-Other configs can be overwrited in config.js;
+Other configs can be overwrited in ```config.js```;
 ```javascript
 twitter: an array with twitter usernames (dafault are bots). This will fill the twitter boxes.
 weather: a city name to show up weather;
