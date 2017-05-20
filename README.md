@@ -4,6 +4,8 @@
 
 A simple terminal sidebar. Ideal for using with any multiplexer client, like tmux, tilix and others. It contains some twitter bots, an animal companion, some weather stuff and updates at every minute.
 
+<img width="1000" alt="tiny terminal care screenshot" src="https://cloud.githubusercontent.com/assets/1369170/25066240/adc3b1ac-21d5-11e7-9811-508b6bcfcc89.png">
+
 ## Make it go
 
 ### 1. Clone it
