@@ -26,11 +26,10 @@ You can exit the dashboard by pressing esc or q. You can refresh it manually by 
 For customizations on layout, [see blessed-contrib grids](https://github.com/yaronn/blessed-contrib#grid);
 
 Other configs can be overwrited in ```config.js```;
-```javascript
-twitter: an array with twitter usernames (dafault are bots). This will fill the twitter boxes.
-weather: a city name to show up weather;
-celsius: if true, degree are showed as celsius. if not it's Fahrenheits.
-```
+`twitter`: an array with twitter usernames (dafault are bots). This will fill the twitter boxes.
+`weather`: a city name to show up weather;
+`celsius`: if true, degree are showed as celsius. if not it's Fahrenheits.
+
 ## :tomato: Pomodoro Mode
 
 You can press 'p' to switch parrot box to pomodoro mode.
