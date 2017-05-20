@@ -178,32 +178,6 @@ function makeGraphBox(label) {
   return options;
 }
 
-function llamaSay(text) {
-  return `
-    ${text}
-    ∩∩
-　（･ω･）
-　　│ │
-　　│ └─┐○
-　  ヽ　　　丿
-　　 　∥￣∥`;
-}
-
-function catSay(text) {
-  return `
-      ${text}
-
-      ♪ ガンバレ! ♪
-  ミ ゛ミ ∧＿∧ ミ゛ミ
-  ミ ミ ( ・∀・ )ミ゛ミ
-   ゛゛ ＼　　　／゛゛
-   　　 　i⌒ヽ ｜
-  　　 　 (＿) ノ
-   　　　　　 ∪`
-    ;
-}
-
-
 var pomodoroHandlers = {
   onTick: function() {
     if (!inPomodoroMode) return;

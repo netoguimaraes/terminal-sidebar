@@ -1,8 +1,13 @@
 var config = {
-  twitter: ('tinycarebot,selfcare_bot,magicrealismbot,boy2bot,thesefutures').toLowerCase().split(','),
-  say: 'cat',
+  twitter: [
+    'tinycarebot',
+    'selfcare_bot',
+    'magicrealismbot',
+    'boy2bot',
+    'thesefutures'
+  ],
   weather: 'Natal',
-  celsius: 'true',
+  celsius: true,
   updateInterval: 1,
 };
 
